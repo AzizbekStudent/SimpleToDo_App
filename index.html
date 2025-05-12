@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ToDo App</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>My ToDo List</h1>
+
+    <!-- Form to Add New ToDo -->
+    <form id="todo-form">
+      <input type="text" id="todo-name" placeholder="Name" required />
+      <textarea id="todo-description" placeholder="Description" required></textarea>
+      <input type="url" id="todo-link" placeholder="Link (optional)" />
+      <input type="date" id="todo-due-date" required />
+      <select id="todo-status" required>
+        <option value="not_started">Not Started</option>
+        <option value="in_progress">In Progress</option>
+        <option value="finished">Finished</option>
+      </select>
+      <button type="submit">Add ToDo</button>
+    </form>
+
+    <hr />
+
+    <!-- ToDo List Display -->
+    <ul id="todo-list"></ul>
+  </div>
+
+  <!-- Firebase and App Scripts -->
+  <script type="module" src="./app.js"></script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDX6sTIe21nvSmTYux3PFVRMh13U-VSb-I",
+      authDomain: "simpletodoappfirebase.firebaseapp.com",
+      projectId: "simpletodoappfirebase",
+      storageBucket: "simpletodoappfirebase.firebasestorage.app",
+      messagingSenderId: "846448600348",
+      appId: "1:846448600348:web:c1a7b2ce17097da2a606d9",
+      measurementId: "G-ZW7LTJN6GV"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+  
+    // Now you can use the `db` to interact with Firestore
+  </script>
+  
+</body>
+</html>
