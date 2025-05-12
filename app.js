@@ -12,12 +12,33 @@ import {
 // References to HTML elements
 const form = document.getElementById('todo-form');
 const todoList = document.getElementById('todo-list');
+const loader = document.getElementById('loader');
+const toast = document.getElementById('toast');
 
-// Firestore collection reference
 const todosCollection = collection(db, 'todos');
 
 let isEditMode = false;
 let editTodoId = null;
+
+// Show toast
+function showToast(message, type = 'success') {
+  toast.textContent = message;
+  toast.className = `toast ${type}`;
+  toast.classList.remove('hidden');
+  setTimeout(() => toast.classList.add('hidden'), 3000);
+}
+
+// Highlight invalid fields
+function highlightInvalidFields(fields) {
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) {
+      el.style.borderColor = 'red';
+    } else {
+      el.style.borderColor = '#ccc';
+    }
+  });
+}
 
 // Handle form submission
 form.addEventListener('submit', async (e) => {
@@ -30,7 +51,8 @@ form.addEventListener('submit', async (e) => {
   const status = document.getElementById('todo-status').value;
 
   if (!name || !description || !dueDate || !status) {
-    alert('Please fill in all required fields.');
+    highlightInvalidFields(['todo-name', 'todo-description', 'todo-due-date', 'todo-status']);
+    showToast('Please fill in all required fields.', 'error');
     return;
   }
 
@@ -44,6 +66,7 @@ form.addEventListener('submit', async (e) => {
         dueDate,
         status
       });
+      showToast('ToDo updated!', 'success');
     } else {
       await addDoc(todosCollection, {
         name,
@@ -53,9 +76,9 @@ form.addEventListener('submit', async (e) => {
         dueDate,
         status
       });
+      showToast('ToDo added!', 'success');
     }
 
-    // Reset form and state after submission
     form.reset();
     isEditMode = false;
     editTodoId = null;
@@ -64,68 +87,81 @@ form.addEventListener('submit', async (e) => {
     loadTodos();
   } catch (error) {
     console.error("Error saving todo: ", error);
+    showToast('Error saving ToDo.', 'error');
   }
 });
 
 // Load and display ToDos
 async function loadTodos() {
   todoList.innerHTML = '';
+  loader.classList.remove('hidden');
+
   try {
     const querySnapshot = await getDocs(todosCollection);
-    querySnapshot.forEach((docSnap) => {
-      const todo = docSnap.data();
-      const id = docSnap.id;
 
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <strong>${todo.name}</strong> - ${todo.status}<br/>
-        ${todo.description}<br/>
-        ${todo.link ? `<a href="${todo.link}" target="_blank">More Info</a><br/>` : ''}
-        <small>Due: ${todo.dueDate}</small><br/>
-        <button class="edit-btn" data-id="${id}">Edit</button>
-        <button class="delete-btn" data-id="${id}">Delete</button>
-        <hr/>
-      `;
-      todoList.appendChild(li);
-    });
+    if (querySnapshot.empty) {
+      todoList.innerHTML = '<p style="text-align:center;color:#777;">No ToDos yet. Add one above!</p>';
+    } else {
+      querySnapshot.forEach((docSnap) => {
+        const todo = docSnap.data();
+        const id = docSnap.id;
 
-    // Attach delete event listeners
-    const deleteButtons = document.querySelectorAll('.delete-btn');
-    deleteButtons.forEach((button) => {
-      button.addEventListener('click', async () => {
-        const id = button.getAttribute('data-id');
-        try {
-          await deleteDoc(doc(db, 'todos', id));
-          loadTodos(); // Refresh list
-        } catch (error) {
-          console.error('Error deleting todo:', error);
-        }
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${todo.name}</strong> - ${todo.status}<br/>
+          ${todo.description}<br/>
+          ${todo.link ? `<a href="${todo.link}" target="_blank">More Info</a><br/>` : ''}
+          <small>Due: ${todo.dueDate}</small><br/>
+          <button class="edit-btn" data-id="${id}">Edit</button>
+          <button class="delete-btn" data-id="${id}">Delete</button>
+          <hr/>
+        `;
+        todoList.appendChild(li);
       });
-    });
 
-    // Attach edit event listeners
-    const editButtons = document.querySelectorAll('.edit-btn');
-    editButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        const id = button.getAttribute('data-id');
-        const todoDoc = querySnapshot.docs.find(d => d.id === id).data();
-
-        document.getElementById('todo-name').value = todoDoc.name;
-        document.getElementById('todo-description').value = todoDoc.description;
-        document.getElementById('todo-link').value = todoDoc.link || '';
-        document.getElementById('todo-due-date').value = todoDoc.dueDate;
-        document.getElementById('todo-status').value = todoDoc.status;
-
-        isEditMode = true;
-        editTodoId = id;
-        form.querySelector('button[type="submit"]').textContent = 'Update ToDo';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Delete listeners
+      const deleteButtons = document.querySelectorAll('.delete-btn');
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+          const id = button.getAttribute('data-id');
+          try {
+            await deleteDoc(doc(db, 'todos', id));
+            showToast('ToDo deleted!', 'success');
+            loadTodos();
+          } catch (error) {
+            console.error('Error deleting todo:', error);
+            showToast('Error deleting ToDo.', 'error');
+          }
+        });
       });
-    });
 
+      // Edit listeners
+      const editButtons = document.querySelectorAll('.edit-btn');
+      editButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const id = button.getAttribute('data-id');
+          const todoDoc = querySnapshot.docs.find(d => d.id === id).data();
+
+          document.getElementById('todo-name').value = todoDoc.name;
+          document.getElementById('todo-description').value = todoDoc.description;
+          document.getElementById('todo-link').value = todoDoc.link || '';
+          document.getElementById('todo-due-date').value = todoDoc.dueDate;
+          document.getElementById('todo-status').value = todoDoc.status;
+
+          isEditMode = true;
+          editTodoId = id;
+          form.querySelector('button[type="submit"]').textContent = 'Update ToDo';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+    }
   } catch (error) {
     console.error("Error loading todos: ", error);
+    todoList.innerHTML = '<p style="color:red;">Failed to load todos.</p>';
+    showToast('Error loading ToDos.', 'error');
   }
+
+  loader.classList.add('hidden');
 }
 
 // Initial load

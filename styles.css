@@ -1,4 +1,4 @@
-/* Reset some default styles */
+/* Reset default styles */
 * {
     margin: 0;
     padding: 0;
@@ -6,25 +6,26 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   
-  /* Container */
+  /* Body & Container */
   body {
-    background-color: #f4f6f8;
+    background-color: #121212;
+    color: #e0e0e0;
     padding: 30px;
   }
   
   .container {
     max-width: 700px;
     margin: auto;
-    background: #fff;
+    background: #1e1e1e;
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.7);
   }
   
   /* Heading */
   h1 {
     text-align: center;
-    color: #333;
+    color: #ff5252;
     margin-bottom: 20px;
   }
   
@@ -41,9 +42,16 @@
   textarea,
   select {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #333;
+    background-color: #2c2c2c;
+    color: #fff;
     border-radius: 6px;
     font-size: 16px;
+  }
+  
+  input::placeholder,
+  textarea::placeholder {
+    color: #aaa;
   }
   
   textarea {
@@ -55,7 +63,7 @@
     padding: 12px;
     font-size: 16px;
     border: none;
-    background-color: #1976d2;
+    background-color: #ff5252;
     color: white;
     border-radius: 6px;
     cursor: pointer;
@@ -63,7 +71,7 @@
   }
   
   button:hover {
-    background-color: #155a9a;
+    background-color: #ff1744;
   }
   
   /* ToDo List Display */
@@ -73,8 +81,8 @@
   }
   
   ul#todo-list li {
-    background: #f0f4f8;
-    border: 1px solid #ddd;
+    background: #2a2a2a;
+    border: 1px solid #444;
     border-radius: 6px;
     padding: 15px;
     margin-bottom: 10px;
@@ -82,11 +90,11 @@
   
   ul#todo-list li strong {
     font-size: 18px;
-    color: #2c3e50;
+    color: #fff;
   }
   
   ul#todo-list a {
-    color: #1976d2;
+    color: #ff5252;
     text-decoration: none;
   }
   
@@ -95,10 +103,11 @@
   }
   
   small {
-    color: #555;
+    color: #aaa;
     font-size: 13px;
   }
   
+  /* Buttons */
   .delete-btn {
     margin-top: 10px;
     background-color: #e53935;
@@ -112,23 +121,61 @@
   .delete-btn:hover {
     background-color: #c62828;
   }
-
+  
   .edit-btn {
     margin-right: 10px;
-    background-color: #fbc02d;
+    background-color: #f57f17;
     color: white;
   }
   
   .edit-btn:hover {
-    background-color: #f9a825;
+    background-color: #ef6c00;
   }
   
   .delete-btn, .edit-btn {
     transition: background-color 0.3s;
-}
-
-@media (max-width: 768px) {
+  }
+  
+  /* Loader */
+  #loader {
+    text-align: center;
+    font-size: 16px;
+    color: #ff5252;
+    margin: 20px 0;
+  }
+  
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    opacity: 0.9;
+    z-index: 1000;
+    transition: opacity 0.4s ease;
+  }
+  
+  .toast.success {
+    background-color: #4caf50;
+  }
+  
+  .toast.error {
+    background-color: #e53935;
+  }
+  
+  /* Utility */
+  .hidden {
+    display: none;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
     form input, form textarea, form select, form button {
-        width: 100%;
+      width: 100%;
     }
-}
+  }
+  

@@ -7,7 +7,10 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="container">
+    <div id="loader" class="hidden">Loading...</div>
+    <div id="toast" class="toast hidden"></div>
+
+    <div class="container">
     <h1>My ToDo List</h1>
 
     <!-- Form to Add New ToDo -->
@@ -28,32 +31,16 @@
 
     <!-- ToDo List Display -->
     <ul id="todo-list"></ul>
-  </div>
+    </div>
 
   <!-- Firebase and App Scripts -->
   <script type="module" src="./app.js"></script>
   <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-  
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDX6sTIe21nvSmTYux3PFVRMh13U-VSb-I",
-      authDomain: "simpletodoappfirebase.firebaseapp.com",
-      projectId: "simpletodoappfirebase",
-      storageBucket: "simpletodoappfirebase.firebasestorage.app",
-      messagingSenderId: "846448600348",
-      appId: "1:846448600348:web:c1a7b2ce17097da2a606d9",
-      measurementId: "G-ZW7LTJN6GV"
-    };
-  
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-  
-    // Now you can use the `db` to interact with Firestore
+    import { initializeApp } from "...";
+    import { getFirestore } from "...";
+    // Firebase config and initialization...
   </script>
+  
   
 </body>
 </html>
